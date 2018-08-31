@@ -10,8 +10,6 @@ class UserController extends Controller
 {
     public function create()
     {
-        $url = parse_url(getenv('DATABASE_URL'));
-        dd($url);
         return view('users.create');
     }
 
