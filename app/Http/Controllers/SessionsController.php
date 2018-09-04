@@ -19,6 +19,9 @@ class SessionsController extends Controller
         return view('sessions.create');
     }
 
+    /**
+     * 用户登录
+     */
     public function store(Request $request)
     {
         $credentials = $this->validate($request, [
@@ -27,8 +30,14 @@ class SessionsController extends Controller
         ]);
 
         if(Auth::attempt($credentials, $request->has('remember'))) {
-            session()->flash('success', '欢迎回来！');
-            return redirect()->intended(route('users.show', [Auth::user()]));
+            if(Auth::user()->activated) {
+                session()->flash('success', '欢迎回来！');
+                return redirect()->intended(route('users.show', [Auth::user()]));
+            } else {
+                Auth::logout();
+                session()->flash('warning', '您的账号未激活，情先在邮箱中激活账号。');
+                return redirect('/');
+            }
         } else {
             session()->flash('danger', '邮箱或密码有误，请重新输入！');
             return redirect()->back();

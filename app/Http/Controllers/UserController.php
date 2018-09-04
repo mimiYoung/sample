@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\User;
+use Mail, Auth;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['create','store','index']
+            'except' => ['create','store','index','confirmEmail']
         ]);
 
         $this->middleware('guest', [
@@ -50,9 +51,9 @@ class UserController extends Controller
             'password'  =>  bcrypt($request->password)
         ]);
 
-        Auth::login($user);
-        session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
-        return redirect()->route('users.show',[$user]);
+        $this->sendEmailConfirmationTo($user);
+        session()->flash('success', '验证邮件已发送，请查收。');
+        return redirect('/');
     }
 
     public function edit(User $user)
@@ -90,5 +91,40 @@ class UserController extends Controller
         $user->delete();
         session()->flash('success', '成功删除用户!');
         return back();
+    }
+
+    public function sendEmailConfirmationTo($user)
+    {
+        $view = 'emails.confirm';
+        $data = compact('user');
+        $from = 'young@sample.com';
+        $name = 'Young';
+        $to = $user->email;
+        $subject = "感谢注册 Sample 应用！请确认你的邮箱。";
+
+        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+            $message->from($from, $name);
+            // $message->sender('john@johndoe.com', 'John Doe');
+            $message->to($to);
+            // $message->cc('john@johndoe.com', 'John Doe');
+            // $message->bcc('john@johndoe.com', 'John Doe');
+            // $message->replyTo('john@johndoe.com', 'John Doe');
+            $message->subject($subject);
+            // $message->priority(3);
+            // $message->attach('pathToFile');
+        });
+    }
+
+    public function confirmEmail($token)
+    {
+        $user = User::where('activation_token', $token)->firstOrFail();
+
+        $user->activated = true;
+        $user->activation_token = null;
+        $user->save();
+
+        Auth::login($user);
+        session()->flash('success', '恭喜你，注册成功！');
+        return redirect()->route('users.show', [$user]);
     }
 }
