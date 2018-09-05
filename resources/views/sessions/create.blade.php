@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="password">密码: </label>
+                        <label for="password">密码（<a href="{{ route('password.request') }}">忘记密码</a>）: </label>
                         <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                     </div>
 
@@ -32,12 +32,13 @@
 
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">登录</button>
+                        
                     </div>
                 </form>
 
                 <hr>
-
-                <p><a href="{{ route('signup') }}">马上注册一个账号</a></p>
+                
+                <p><a href="{{ route('signup') }}">注册账号</a></p>
             </div>
         </div>
     </div>

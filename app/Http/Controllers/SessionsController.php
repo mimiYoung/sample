@@ -35,7 +35,7 @@ class SessionsController extends Controller
                 return redirect()->intended(route('users.show', [Auth::user()]));
             } else {
                 Auth::logout();
-                session()->flash('warning', '您的账号未激活，情先在邮箱中激活账号。');
+                session()->flash('warning', '您的账号未激活，请先在邮箱中激活账号。');
                 return redirect('/');
             }
         } else {
