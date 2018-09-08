@@ -42,7 +42,7 @@
                         <input type="password" name="password_confirmation" class="form-control" value="{{ old('password_confirmation') }}">
                     </div>
 
-                    <button class="btn btn-primary" type="reset">提交</button>
+                    <button class="btn btn-primary" type="submit">提交</button>
                 </form>
             </div>
         </div>

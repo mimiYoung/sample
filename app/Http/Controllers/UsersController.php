@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
+use App\Http\Rquests;
 use App\Models\User;
 use Mail, Auth;
 
-class UserController extends Controller
+class UsersController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['create','store','index','confirmEmail']
+            'except' => ['create','store','confirmEmail']
         ]);
 
         $this->middleware('guest', [
@@ -20,23 +20,40 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 用户列表(页面)
+     */
     public function index()
     {
         $users = User::paginate(10);
         return view('users.index', compact('users'));
     }
 
+    /**
+     * 用户注册(页面)
+     */
     public function create()
     {
         return view('users.create');
     }
 
+    /**
+     * 用户个人(页面)
+     */
     public function show(User $user)
     {
         $this->authorize('update', $user);
-        return view('users.show',compact('user'));
+
+        $statuses = $user->statuses()
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(30);
+
+        return view('users.show',compact('user', 'statuses'));
     }
 
+    /**
+     * 用户注册
+     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -56,12 +73,18 @@ class UserController extends Controller
         return redirect('/');
     }
 
+    /**
+     * 用户资料修改(页面)
+     */
     public function edit(User $user)
     {
         $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
+    /**
+     * 用户资料修改
+     */
     public function update(User $user, Request $request)
     {
         $this->validate($request, [
@@ -85,6 +108,9 @@ class UserController extends Controller
         return redirect()->route('users.show', $user->id);
     }
 
+    /**
+     * 删除用户
+     */
     public function destroy(User $user)
     {
         $this->authorize('destroy', $user);
@@ -93,6 +119,9 @@ class UserController extends Controller
         return back();
     }
 
+    /**
+     * 发送用户激活邮件
+     */
     public function sendEmailConfirmationTo($user)
     {
         $view = 'emails.confirm';
@@ -116,6 +145,9 @@ class UserController extends Controller
         });
     }
 
+    /**
+     * 用户邮箱验证后激活
+     */
     public function confirmEmail($token)
     {
         $user = User::where('activation_token', $token)->firstOrFail();
