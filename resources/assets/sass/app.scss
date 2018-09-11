@@ -117,13 +117,12 @@ footer {
     }
 }
 
-/*  侧边栏  */
+/*  siderbar  */
 aside {
     textarea {
         height: 100px;
         margin-bottom: 5px;
     }
-
     section {
         padding-top: 10px 0;
         margin-top: 20px;
@@ -136,6 +135,40 @@ aside {
             margin-bottom: 3px;
             line-height: 1;
         }
+    }
+}
+
+.stats {
+    overflow: auto;
+    margin-top: 0;
+    padding: 0;
+    a {
+        float: left;
+        padding: 0 10px;
+        text-align: center;
+        width: 33%;
+        border-left: 1px solid $gray-lighter;
+        color: gray;
+        &:first-child {
+            padding-left: 0;
+            border: 0;
+        }
+        &:hover {
+            text-decoration: none;
+            color: #337ab7;
+        }
+    }
+    strong {
+        display: block;
+        font-size: 1.2em;
+        color: black;
+    }
+}
+
+#follow_form {
+    button {
+        display: block;
+        margin: 20px auto;
     }
 }
 
@@ -195,10 +228,15 @@ input {
         padding: 10px 0;
         border-bottom: 1px solid $gray-light;
     }
-    .username {
-        display: inline-block;
-        margin: 15px 10px 0;
-    }
+    // .username {
+    //     display: inline-block;
+    //     margin: 15px 10px 0;
+    // }
+}
+
+.username {
+    display: inline-block;
+    margin: 15px 10px 0;
 }
 
 .user_delete {

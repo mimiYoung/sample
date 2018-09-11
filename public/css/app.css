@@ -8469,7 +8469,7 @@ footer .slogo {
   color: #fff;
 }
 
-/*  侧边栏  */
+/*  siderbar  */
 
 aside textarea {
   height: 100px;
@@ -8490,6 +8490,42 @@ aside section span {
   display: block;
   margin-bottom: 3px;
   line-height: 1;
+}
+
+.stats {
+  overflow: auto;
+  margin-top: 0;
+  padding: 0;
+}
+
+.stats a {
+  float: left;
+  padding: 0 10px;
+  text-align: center;
+  width: 33%;
+  border-left: 1px solid #eeeeee;
+  color: gray;
+}
+
+.stats a:first-child {
+  padding-left: 0;
+  border: 0;
+}
+
+.stats a:hover {
+  text-decoration: none;
+  color: #337ab7;
+}
+
+.stats strong {
+  display: block;
+  font-size: 1.2em;
+  color: black;
+}
+
+#follow_form button {
+  display: block;
+  margin: 20px auto;
 }
 
 section.user_info {
@@ -8560,7 +8596,7 @@ input {
   border-bottom: 1px solid #777777;
 }
 
-.users .username {
+.username {
   display: inline-block;
   margin: 15px 10px 0;
 }

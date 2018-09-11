@@ -12,7 +12,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['create','store','confirmEmail']
+            'except' => ['create','store','show','confirmEmail']
         ]);
 
         $this->middleware('guest', [
@@ -22,6 +22,8 @@ class UsersController extends Controller
 
     /**
      * 用户列表(页面)
+     *
+     * @return void
      */
     public function index()
     {
@@ -31,6 +33,8 @@ class UsersController extends Controller
 
     /**
      * 用户注册(页面)
+     *
+     * @return void
      */
     public function create()
     {
@@ -39,20 +43,24 @@ class UsersController extends Controller
 
     /**
      * 用户个人(页面)
+     *
+     * @param User $user
+     * @return void
      */
     public function show(User $user)
     {
-        $this->authorize('update', $user);
-
         $statuses = $user->statuses()
                         ->orderBy('created_at', 'desc')
-                        ->paginate(30);
+                        ->paginate(10);
 
         return view('users.show',compact('user', 'statuses'));
     }
 
     /**
      * 用户注册
+     *
+     * @param Request $request
+     * @return void
      */
     public function store(Request $request)
     {
@@ -75,6 +83,9 @@ class UsersController extends Controller
 
     /**
      * 用户资料修改(页面)
+     *
+     * @param User $user
+     * @return void
      */
     public function edit(User $user)
     {
@@ -84,6 +95,10 @@ class UsersController extends Controller
 
     /**
      * 用户资料修改
+     *
+     * @param User $user
+     * @param Request $request
+     * @return void
      */
     public function update(User $user, Request $request)
     {
@@ -110,6 +125,9 @@ class UsersController extends Controller
 
     /**
      * 删除用户
+     *
+     * @param User $user
+     * @return void
      */
     public function destroy(User $user)
     {
@@ -121,6 +139,9 @@ class UsersController extends Controller
 
     /**
      * 发送用户激活邮件
+     *
+     * @param object $user
+     * @return void
      */
     public function sendEmailConfirmationTo($user)
     {
@@ -147,6 +168,9 @@ class UsersController extends Controller
 
     /**
      * 用户邮箱验证后激活
+     *
+     * @param string $token
+     * @return void
      */
     public function confirmEmail($token)
     {
@@ -159,5 +183,33 @@ class UsersController extends Controller
         Auth::login($user);
         session()->flash('success', '恭喜你，注册成功！');
         return redirect()->route('users.show', [$user]);
+    }
+
+    /**
+     * 我关注的人
+     *
+     * @param User $user
+     * @return void
+     */
+    public function followings(User $user)
+    {
+        $users = $user->followings()->paginate(10);
+        $title = '我关注的人';
+
+        return view('users.show_follow', compact('users', 'title'));
+    }
+
+    /**
+     * 粉丝
+     *
+     * @param User $user
+     * @return void
+     */
+    public function followers(User $user)
+    {
+        $users = $user->followers()->paginate(10);
+        $title = '粉丝';
+
+        return view('users.show_follow', compact('users', 'title'));
     }
 }
